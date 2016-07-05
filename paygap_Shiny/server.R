@@ -131,9 +131,6 @@ shinyServer(function(input, output, session) {
   #     re-executed when inputs change
   #  2) Its output type is a plot
   
-  # Display the selected State
-  #output$state <- renderPrint(input$state)
-  stepNumber <- 0 
   
   datasetInput <- reactive({
     ###############################################################
@@ -227,7 +224,7 @@ shinyServer(function(input, output, session) {
     #> midaasDataFrame
     #             Income             Quantile
     #    1    $30.00k-$40.00k    0.125747745933784
-    #    2    $40.00k-$50.00k    0.106384589390417
+    #    2    $40.00k-$50.00k    0.106384589390417    
     midaasDataFrame
   })
   
@@ -251,9 +248,4 @@ shinyServer(function(input, output, session) {
     return(paste('<iframe style="height:600px; width:100%" src="', input$pdfurl, '"></iframe>', sep = ""))
   })
   
-  #stepNumber <- 0
-  output$BA_Caption <- renderText({ 
-    stepNumber <- stepNumber + 1
-    paste("You have selected this", stepNumber)
-  })
 })

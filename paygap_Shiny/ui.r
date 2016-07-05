@@ -45,12 +45,46 @@ shinyUI(navbarPage("Team BabyMomma",
                             titlePanel("HackThePayGap App for Workers: BumpAhead App"),
                             sidebarLayout(
                               sidebarPanel(
-                                h1(helpText("Play to learn how the high cost of child care impacts the gender pay gap"))#,
-                                #submitButton("Get Started")
+                                img(src='logo_bumpAhead_small.png'),
+                                # Screen 1: "Play to learn how the high cost of child care impacts the gender pay gap"
+                                conditionalPanel(
+                                  condition = "input.ChooseStep1 == 0",
+                                  h1(helpText("Play to learn how the high cost of child care impacts the gender pay gap"))
+                                  ),
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep1 == 0)",
+                                  radioButtons("ChooseStep1", "",
+                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)
+                                  ),
+                                # Screen 2: "When women have a child, their potential future earnings decrease by 5%"
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep1 == 1) && (input.ChooseStep2 == 0)",
+                                  h1(helpText("When women have a child, their potential future earnings decrease by 5%"))
+                                  ),
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep1 == 1) && (input.ChooseStep2 == 0)",
+                                  radioButtons("ChooseStep2", "",
+                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)),
+                                # Screen 3: "Imagine that you are about to be a mother for the first time"
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep2 == 1) && (input.ChooseStep3 == 0)",
+                                  h1(helpText("Imagine that you are about to be a mother for the first time"))
+                                ),
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep2 == 1) && (input.ChooseStep3 == 0)",
+                                  radioButtons("ChooseStep3", "",
+                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)),
+                                # Screen 4: "You work full time and plan on continuing to work after the baby comes"
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep3 == 1) && (input.ChooseStep4 == 0)",
+                                  h1(helpText("You work full time and plan on continuing to work after the baby comes"))
+                                ),
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep3 == 1) && (input.ChooseStep4 == 0)",
+                                  radioButtons("ChooseStep4", "",
+                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE))
                               ),
-                              mainPanel(
-                                #textOutput("BA_Caption")
-                              )
+                              mainPanel()
                             )
                    ), # tabPanel("BumpAhead",
                    
