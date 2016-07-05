@@ -1,3 +1,11 @@
+# URL: https://pragyansmita.shinyapps.io/paygap_Shiny/ 
+
+# To deploy the app in ShinyApps.io (5 apps allowed for free)
+# if (!require(rsconnect))
+#   install.packages("rsconnect")
+# library(rsconnect)
+# rsconnect::deployApp('C:\\New folder\\HackThePayGap\\paygap_Shiny')
+
 # Load required libraries
 if (!require(shiny))
   install.packages("shiny")
