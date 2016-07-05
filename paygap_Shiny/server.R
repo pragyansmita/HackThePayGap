@@ -244,6 +244,11 @@ shinyServer(function(input, output, session) {
     paste("The current time is", Sys.time())
   })
   
+  output$currentTime_BA <- renderText({
+    invalidateLater(1000, session)
+    paste("The current time is", Sys.time())
+  })
+  
   output$pdfviewer <- renderText({
     return(paste('<iframe style="height:600px; width:100%" src="', input$pdfurl, '"></iframe>', sep = ""))
   })

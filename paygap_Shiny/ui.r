@@ -82,9 +82,41 @@ shinyUI(navbarPage("Team BabyMomma",
                                 conditionalPanel(
                                   condition = "(input.ChooseStep3 == 1) && (input.ChooseStep4 == 0)",
                                   radioButtons("ChooseStep4", "",
+                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)),
+                                # Screen 5: "You need to find an affordable and high quality way to care for your baby 40 hours a week"
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep4 == 1) && (input.ChooseStep5 == 0)",
+                                  h1(helpText("You need to find an affordable and high quality way to care for your baby 40 hours a week"))
+                                ),
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep4 == 1) && (input.ChooseStep5 == 0)",
+                                  radioButtons("ChooseStep5", "",
+                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)),
+                                # Screen 6: "Your baby's first year is critical to healthy development and future success"
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep5 == 1) && (input.ChooseStep6 == 0)",
+                                  h1(helpText("Your baby's first year is critical to healthy development and future success"))
+                                ),
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep5 == 1) && (input.ChooseStep6 == 0)",
+                                  radioButtons("ChooseStep6", "",
+                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)),
+                                # Screen 7: "Where do you live?"
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep6 == 1) && (input.ChooseStep7 == 0)",
+                                  selectInput('stateName_BA', "Where do you live?", c(Choose='', state.name), 
+                                              selected="Virginia", selectize=FALSE)),
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep6 == 1) && (input.ChooseStep7 == 0)",
+                                  radioButtons("ChooseStep7", "",
                                                c("Yes" = 1, "No" = 0), selected=0, inline=TRUE))
                               ),
-                              mainPanel()
+                              mainPanel(
+                                textOutput("currentTime_BA")
+                                # Regular table display - instead use DataTable for more interactivity
+                                # tableOutput("payGapRecords")
+                                #dataTableOutput("payGapRecordsDT_BA")
+                              )
                             )
                    ), # tabPanel("BumpAhead",
                    
