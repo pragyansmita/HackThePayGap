@@ -112,11 +112,13 @@ shinyUI(navbarPage("Team BabyMomma",
                                                c("Yes" = 1, "No" = 0), selected=0, inline=TRUE))
                               ),
                               mainPanel(
-                                textOutput("currentTime_BA")
+                                textOutput("currentTime_BA"),
                                 # Regular table display - instead use DataTable for more interactivity
-                                # tableOutput("payGapRecords")
-                                #dataTableOutput("payGapRecordsDT_BA")
-                              )
+                                # tableOutput("payGapRecords_BA")
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep6 == 1) && (input.ChooseStep7 == 0)",
+                                  dataTableOutput("payGapRecordsDT_BA"))
+                              ) # mainPanel(
                             )
                    ), # tabPanel("BumpAhead",
                    
@@ -242,7 +244,7 @@ shinyUI(navbarPage("Team BabyMomma",
                                                 includeMarkdown("Proposal.md")
                                          ),
                                          column(3,
-                                                HTML('<div style="float: margin: 0 5px 5px 10px;"><iframe width="560" height="315" src="https://www.youtube.com/embed/guLDvQ8IPUA" frameborder="0" allowfullscreen></iframe></div>'),
+                                                tags$video(width="560", height="315", src="BumpaheadVideoSubmission.m4v", controls=NA),
                                                 tags$small(
                                                   "Project Proposal Video: BumpAhead App - HackThePayGap Application for Workers"
                                                 )
@@ -273,6 +275,9 @@ shinyUI(navbarPage("Team BabyMomma",
                                        tags$strong(
                                          "BumpAhead App Design - HackThePayGap Application for Workers"
                                        ),
+                                       htmlOutput('pdfviewer'),
+                                       # tags$iframe(width = "100%", height = "500px", scrolling="yes", 
+                                       #             src="babymamma_InVision.pdf"),
                                        img(class="img-polaroid",
                                            src="design.png", width = "1281px", height = "734px")
                               )
