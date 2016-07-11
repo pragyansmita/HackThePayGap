@@ -3,6 +3,9 @@
 # To deploy the app in ShinyApps.io (5 apps allowed for free)
 # if (!require(rsconnect))
 #   install.packages("rsconnect")
+#
+# rsconnect::setAccountInfo(name=<NAME>, token=<TOKEN>, secret=<SECRET>)
+#
 # library(rsconnect)
 # rsconnect::deployApp('C:\\New folder\\HackThePayGap\\paygap_Shiny')
 
@@ -156,8 +159,15 @@ shinyServer(function(input, output, session) {
     api <- input$api
     includeYear <- input$includeYear
     year <- input$year
+    
     includeState <- input$includeState
     state <- state.abb[state.name == input$stateName]
+    cat(file=stderr(), "State in MIDAAS tab = ", state, "\n")
+    state_BA <- state.abb[state.name == input$stateName_BA]
+    cat(file=stderr(), "State in BumpAhead tab = ", state_BA, "\n")
+    # TBD: Add logic to make the REST API call using State (and the rest of the parameters) 
+    #      from the tab initiating the reactive method call
+    
     includeRace <- input$includeRace
     race <- input$race
     includeSex <- input$includeSex
@@ -242,8 +252,15 @@ shinyServer(function(input, output, session) {
   #   output$payGapRecords <- renderTable({
   #     datasetInput()
   #   })
+  #   output$payGapRecords_BA <- renderTable({
+  #     datasetInput()
+  #   })
   
   output$payGapRecordsDT <- renderDataTable({
+    datasetInput()
+  })
+  
+  output$payGapRecordsDT_BA <- renderDataTable({
     datasetInput()
   })
   
@@ -258,7 +275,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$pdfviewer <- renderText({
-    return(paste('<iframe style="height:600px; width:100%" src="', input$pdfurl, '"></iframe>', sep = ""))
+    return('<iframe style="height:600px; width:100%", src="babymamma_InVision.pdf"></iframe>')
   })
   
 })
