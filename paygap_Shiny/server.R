@@ -27,7 +27,7 @@ if (!require(rjson))
 ################################################################################
 # Data.gov API Key: Z69XvTaBEqK7g7VshJ0FGDb4ReDtFjKjeVvpNWMv
 ################################################################################
-# TBD: Before use, replace with your registered Data.gov API key
+# Configure before use: Replace api_key with your registered Data.gov API key
 ################################################################################
 api_key <- "Z69XvTaBEqK7g7VshJ0FGDb4ReDtFjKjeVvpNWMv"
 ################################################################################
@@ -126,6 +126,79 @@ formulateURL <- function(domain, api, includeYear, year, includeState,
 }
 
 
+getData <- function(domain, api, includeYear, year, includeState, 
+                         state, includeRace, race, includeSex, sex, 
+                         includeAgeGroup, ageGroup, includeCompare, compare, api_key) {
+  definedURL <- formulateURL(domain, api, includeYear, year, includeState, 
+                             state, includeRace, race, includeSex, sex, 
+                             includeAgeGroup, ageGroup, includeCompare, compare, api_key)
+  #t(data.frame(rjson::fromJSON(file = definedURL)))
+  #do.call(rbind.data.frame, your_list)
+  midaasDataList <- rjson::fromJSON(file = definedURL)
+  # typeof(midaasDataList) ## "list"
+  # midaasDataList
+  #
+  #   $`$30.00k-$40.00k`
+  #   [1] 0.1257477
+  #   
+  #   $`$40.00k-$50.00k`
+  #   [1] 0.1063846
+  #   
+  
+  midaasDataFrame <- data.frame()
+  
+  if (length(midaasDataList) != 0 ) {
+    if (api == "/distribution") { 
+      midaasDataList <- do.call(rbind.data.frame, midaasDataList)
+      # typeof(midaasDataList) ## "list"
+      # midaasDataList
+      #
+      #   c.0.125747745933784..0.106384589390417..0.145321617573951..0.00526319486229768..
+      #   $30.00k-$40.00k                                                                       1.257477e-01
+      #   $40.00k-$50.00k                                                                       1.063846e-01
+      #
+      
+      midaasDataFrame <- data.frame(cbind(rownames(midaasDataList), midaasDataList[[1]]))
+      # typeof(midaasDataFrame) ## "list"
+      #   > midaasDataFrame
+      #   
+      #             X1                   X2
+      #   1    $30.00k-$40.00k    0.125747745933784
+      #   2    $40.00k-$50.00k    0.106384589390417
+      #   
+      names(midaasDataFrame) <- c("Income","Quantile")
+      # Change Quantiles to numeric values
+      midaasDataFrame$Quantile <- as.numeric.factor(midaasDataFrame$Quantile)        
+      # Round Quantiles to 5-digit precision
+      midaasDataFrame$Quantile <- round(midaasDataFrame$Quantile, quantile_precision)
+    }
+    else if (api == "/quantiles") { 
+      midaasDataList <- do.call(cbind.data.frame, midaasDataList)
+      # typeof(midaasDataList) ## "list"
+      # midaasDataList
+      #
+      #
+      # overall.5% overall.10% overall.20% overall.30% overall.40% overall.50% overall.60% overall.70% overall.80%
+      #       2000        6000       14000       23000       30600       40000       50000       63000       84000
+      # overall.90% overall.95% overall.99%
+      #      120000      156000      426000
+      #
+      
+      midaasDataList <- t(midaasDataList)
+      midaasDataFrame <- data.frame(cbind(rownames(midaasDataList), midaasDataList[,1]))
+      rownames(midaasDataFrame) <- NULL
+      names(midaasDataFrame) <- c("Quantile","Income")
+    }
+  }
+  
+  #> midaasDataFrame
+  #             Income             Quantile
+  #    1    $30.00k-$40.00k    0.125747745933784
+  #    2    $40.00k-$50.00k    0.106384589390417    
+  return (midaasDataFrame)
+}
+  
+
 # MIDAAS API Call
 # Example : https://api.commerce.gov/midaas/distribution?state=VA&race=white&sex=female&api_key=Z69XvTaBEqK7g7VshJ0FGDb4ReDtFjKjeVvpNWMv
 #definedURL <- formulateURL(domain, api, year, state, race, sex, ageGroup, compare, api_key)
@@ -143,7 +216,7 @@ shinyServer(function(input, output, session) {
   #  2) Its output type is a plot
   
   
-  datasetInput <- reactive({
+  datasetInput_MIDAAS <- reactive({
     ###############################################################
     # MIDAAS API Call
     ###############################################################
@@ -162,11 +235,7 @@ shinyServer(function(input, output, session) {
     
     includeState <- input$includeState
     state <- state.abb[state.name == input$stateName]
-    cat(file=stderr(), "State in MIDAAS tab = ", state, "\n")
-    state_BA <- state.abb[state.name == input$stateName_BA]
-    cat(file=stderr(), "State in BumpAhead tab = ", state_BA, "\n")
-    # TBD: Add logic to make the REST API call using State (and the rest of the parameters) 
-    #      from the tab initiating the reactive method call
+    # cat(file=stderr(), "State in MIDAAS tab = ", state, "\n")
     
     includeRace <- input$includeRace
     race <- input$race
@@ -177,75 +246,45 @@ shinyServer(function(input, output, session) {
     includeCompare <- input$includeCompare
     compare <- input$compare
     
-    definedURL <- formulateURL(domain, api, includeYear, year, includeState, 
-                               state, includeRace, race, includeSex, sex, 
-                               includeAgeGroup, ageGroup, includeCompare, compare, api_key)
-    #t(data.frame(rjson::fromJSON(file = definedURL)))
-    #do.call(rbind.data.frame, your_list)
-    midaasDataList <- rjson::fromJSON(file = definedURL)
-    # typeof(midaasDataList) ## "list"
-    # midaasDataList
-    #
-    #   $`$30.00k-$40.00k`
-    #   [1] 0.1257477
-    #   
-    #   $`$40.00k-$50.00k`
-    #   [1] 0.1063846
-    #   
-    
-    midaasDataFrame <- data.frame()
-    
-    if (length(midaasDataList) != 0 ) {
-      if (api == "/distribution") { 
-        midaasDataList <- do.call(rbind.data.frame, midaasDataList)
-        # typeof(midaasDataList) ## "list"
-        # midaasDataList
-        #
-        #   c.0.125747745933784..0.106384589390417..0.145321617573951..0.00526319486229768..
-        #   $30.00k-$40.00k                                                                       1.257477e-01
-        #   $40.00k-$50.00k                                                                       1.063846e-01
-        #
-        
-        midaasDataFrame <- data.frame(cbind(rownames(midaasDataList), midaasDataList[[1]]))
-        # typeof(midaasDataFrame) ## "list"
-        #   > midaasDataFrame
-        #   
-        #             X1                   X2
-        #   1    $30.00k-$40.00k    0.125747745933784
-        #   2    $40.00k-$50.00k    0.106384589390417
-        #   
-        names(midaasDataFrame) <- c("Income","Quantile")
-        # Change Quantiles to numeric values
-        midaasDataFrame$Quantile <- as.numeric.factor(midaasDataFrame$Quantile)        
-        # Round Quantiles to 5-digit precision
-        midaasDataFrame$Quantile <- round(midaasDataFrame$Quantile, quantile_precision)
-      }
-      else if (api == "/quantiles") { 
-        midaasDataList <- do.call(cbind.data.frame, midaasDataList)
-        # typeof(midaasDataList) ## "list"
-        # midaasDataList
-        #
-        #
-        # overall.5% overall.10% overall.20% overall.30% overall.40% overall.50% overall.60% overall.70% overall.80%
-        #       2000        6000       14000       23000       30600       40000       50000       63000       84000
-        # overall.90% overall.95% overall.99%
-        #      120000      156000      426000
-        #
-        
-        midaasDataList <- t(midaasDataList)
-        midaasDataFrame <- data.frame(cbind(rownames(midaasDataList), midaasDataList[,1]))
-        rownames(midaasDataFrame) <- NULL
-        names(midaasDataFrame) <- c("Quantile","Income")
-      }
-    }
-    
-    #> midaasDataFrame
-    #             Income             Quantile
-    #    1    $30.00k-$40.00k    0.125747745933784
-    #    2    $40.00k-$50.00k    0.106384589390417    
-    midaasDataFrame
+    midaasDataFrame <- getData(domain, api, includeYear, year, includeState, 
+                                    state, includeRace, race, includeSex, sex, 
+                                    includeAgeGroup, ageGroup, includeCompare, compare, api_key)
   })
   
+  
+  datasetInput_BA <- reactive({
+    ###############################################################
+    # MIDAAS API Call
+    ###############################################################
+    # Default URL:
+    #   https://api.commerce.gov/midaas/distribution?year=2014&state=VA&
+    #   race=white&sex=female&ageGroup=35-44&compare=state&
+    #   api_key=Z69XvTaBEqK7g7VshJ0FGDb4ReDtFjKjeVvpNWMv
+    ###############################################################
+    # definedURL <- formulateURL(domain, api, year, state, race, sex, ageGroup, compare, api_key)
+    # payGapRecords <- rjson::fromJSON(file = definedURL)
+    ###############################################################
+    # Read values from UI input
+    api <- "/quantiles"
+    
+    includeYear <- TRUE
+    year <- "2014"
+    
+    includeState <- TRUE
+    state_BA <- state.abb[state.name == input$stateName_BA]
+    # cat(file=stderr(), "State in BumpAhead tab = ", state_BA, "\n")
+    
+    includeRace <- FALSE
+    
+    includeSex <- TRUE
+    sex <- "female"
+    includeAgeGroup <- FALSE
+    includeCompare <- FALSE
+    
+    midaasDataFrame <- getData(domain, api, includeYear, year, includeState, 
+                               state_BA, includeRace, race, includeSex, sex, 
+                               includeAgeGroup, ageGroup, includeCompare, compare, api_key)
+  })  
   
   # Show the MIDAAS API Call resulting information
   # Regular table display - instead use DataTable for more interactivity
@@ -257,11 +296,11 @@ shinyServer(function(input, output, session) {
   #   })
   
   output$payGapRecordsDT <- renderDataTable({
-    datasetInput()
+    datasetInput_MIDAAS()
   })
   
   output$payGapRecordsDT_BA <- renderDataTable({
-    datasetInput()
+    datasetInput_BA()
   })
   
   output$currentTime <- renderText({

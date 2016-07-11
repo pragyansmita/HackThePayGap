@@ -53,8 +53,7 @@ shinyUI(navbarPage("Team BabyMomma",
                                   ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep1 == 0)",
-                                  radioButtons("ChooseStep1", "",
-                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)
+                                  actionButton("ChooseStep1", "Next")
                                   ),
                                 # Screen 2: "When women have a child, their potential future earnings decrease by 5%"
                                 conditionalPanel(
@@ -63,53 +62,54 @@ shinyUI(navbarPage("Team BabyMomma",
                                   ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep1 == 1) && (input.ChooseStep2 == 0)",
-                                  radioButtons("ChooseStep2", "",
-                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)),
+                                  actionButton("ChooseStep2", "Next")
+                                  ),
                                 # Screen 3: "Imagine that you are about to be a mother for the first time"
                                 conditionalPanel(
                                   condition = "(input.ChooseStep2 == 1) && (input.ChooseStep3 == 0)",
                                   h1(helpText("Imagine that you are about to be a mother for the first time"))
-                                ),
+                                  ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep2 == 1) && (input.ChooseStep3 == 0)",
-                                  radioButtons("ChooseStep3", "",
-                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)),
+                                  actionButton("ChooseStep3", "Next")
+                                  ),
                                 # Screen 4: "You work full time and plan on continuing to work after the baby comes"
                                 conditionalPanel(
                                   condition = "(input.ChooseStep3 == 1) && (input.ChooseStep4 == 0)",
                                   h1(helpText("You work full time and plan on continuing to work after the baby comes"))
-                                ),
+                                  ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep3 == 1) && (input.ChooseStep4 == 0)",
-                                  radioButtons("ChooseStep4", "",
-                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)),
+                                  actionButton("ChooseStep4", "Next")
+                                  ),
                                 # Screen 5: "You need to find an affordable and high quality way to care for your baby 40 hours a week"
                                 conditionalPanel(
                                   condition = "(input.ChooseStep4 == 1) && (input.ChooseStep5 == 0)",
                                   h1(helpText("You need to find an affordable and high quality way to care for your baby 40 hours a week"))
-                                ),
+                                  ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep4 == 1) && (input.ChooseStep5 == 0)",
-                                  radioButtons("ChooseStep5", "",
-                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)),
+                                  actionButton("ChooseStep5", "Next")
+                                  ),
                                 # Screen 6: "Your baby's first year is critical to healthy development and future success"
                                 conditionalPanel(
                                   condition = "(input.ChooseStep5 == 1) && (input.ChooseStep6 == 0)",
                                   h1(helpText("Your baby's first year is critical to healthy development and future success"))
-                                ),
+                                  ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep5 == 1) && (input.ChooseStep6 == 0)",
-                                  radioButtons("ChooseStep6", "",
-                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE)),
+                                  actionButton("ChooseStep6", "Next")
+                                  ),
                                 # Screen 7: "Where do you live?"
                                 conditionalPanel(
                                   condition = "(input.ChooseStep6 == 1) && (input.ChooseStep7 == 0)",
                                   selectInput('stateName_BA', "Where do you live?", c(Choose='', state.name), 
-                                              selected="Virginia", selectize=FALSE)),
+                                              selected="Virginia", selectize=FALSE)
+                                  ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep6 == 1) && (input.ChooseStep7 == 0)",
-                                  radioButtons("ChooseStep7", "",
-                                               c("Yes" = 1, "No" = 0), selected=0, inline=TRUE))
+                                  actionButton("ChooseStep7", "Next")
+                                  )
                               ),
                               mainPanel(
                                 textOutput("currentTime_BA"),
