@@ -5,6 +5,7 @@ if (!require(markdown))
   install.packages("markdown")
 if (!require(DT))
   install.packages("DT")
+# http://rpackages.ianhowson.com/cran/metricsgraphics/
 if (!require(metricsgraphics))
   install.packages("metricsgraphics")
 
