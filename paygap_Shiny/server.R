@@ -16,6 +16,7 @@ if (!require(shiny))
 #   install.packages("jsonlite")
 if (!require(rjson))
   install.packages("rjson")
+# http://rpackages.ianhowson.com/cran/metricsgraphics/
 if (!require(metricsgraphics))
   install.packages("metricsgraphics")
 
@@ -194,6 +195,7 @@ getData <- function(domain, api, includeYear, year, includeState,
       names(midaasDataFrame) <- c("Quantile","Income")
       midaasDataFrame$Quantile <- gsub("overall\\.", "", midaasDataFrame$Quantile)
       midaasDataFrame$Quantile <- gsub("\\%", "", midaasDataFrame$Quantile)
+      midaasDataFrame$Income <- as.numeric(levels(midaasDataFrame$Income))[midaasDataFrame$Income]
     }
   }
   
@@ -332,7 +334,8 @@ shinyServer(function(input, output, session) {
     df <- datasetInput_BA()
     mjs_plot(data=df, x=Quantile, y=Income, title=paste("Selected State:", input$stateName_BA, sep=" ")) %>%
       mjs_labs(x="Quantile", y="Income") %>%
-      mjs_axis_x(xax_format = 'plain')
+      mjs_axis_x(xax_count = 10, min_x = 1, max_x = 100) %>%
+      mjs_axis_y(yax_count = 10, min_y = min(df$Income), max_y = max(df$Income))
   })
 
   output$currentTime <- renderText({
