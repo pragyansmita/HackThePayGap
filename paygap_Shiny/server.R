@@ -352,4 +352,33 @@ shinyServer(function(input, output, session) {
     return('<iframe style="height:600px; width:100%", src="babymamma_InVision.pdf"></iframe>')
   })
   
+  output$stateRank_PayGapByMedian <- renderText({
+    # Female Statistics
+    statesMedianFemale2014 <- rjson::fromJSON(file = "https://api.commerce.gov/midaas/quantiles?year=2014&sex=female&compare=state&api_key=Z69XvTaBEqK7g7VshJ0FGDb4ReDtFjKjeVvpNWMv")
+    #length(statesMedianFemale2014)
+    statesMedianFemale2014 <- do.call(cbind.data.frame, statesMedianFemale2014)
+    statesMedianFemale2014 <- statesMedianFemale2014[ , grepl( ".50%" , names( statesMedianFemale2014 ) ) ]
+    statesMedianFemale2014 <- do.call(rbind.data.frame, statesMedianFemale2014)
+    
+    # Male Statistics
+    statesMedianMale2014 <- rjson::fromJSON(file = "https://api.commerce.gov/midaas/quantiles?year=2014&sex=male&compare=state&api_key=Z69XvTaBEqK7g7VshJ0FGDb4ReDtFjKjeVvpNWMv")
+    #length(statesMedianFemale2014)
+    statesMedianMale2014 <- do.call(cbind.data.frame, statesMedianMale2014)
+    statesMedianMale2014 <- statesMedianMale2014[ , grepl( ".50%" , names( statesMedianMale2014 ) ) ]
+    statesMedianMale2014 <- do.call(rbind.data.frame, statesMedianMale2014)
+    
+    # Create data frame
+    statesMedian2014 <- data.frame(cbind(statesMedianFemale2014, statesMedianMale2014))
+    #length(statesMedian2014)
+    names(statesMedian2014) <- c("Female","Male")
+    row.names(statesMedian2014) <- gsub(".50%", "", row.names(statesMedian2014))
+    statesMedian2014$PayGap <- statesMedian2014$Male - statesMedian2014$Female
+    
+    state_BA <- state.abb[state.name == input$stateName_BA]
+    state_PayGapRank <-which(row.names(statesMedian2014[order(statesMedian2014$PayGap),])== state_BA)
+    #cat(file=stderr(), "State: ", state_BA, "\n")
+    #cat(file=stderr(), "State Rank: ", state_PayGapRank, "\n")
+    paste(input$stateName_BA, paste("(", state_BA, ")", sep=""),
+          "is ranked #", state_PayGapRank, "in the country for pay equality.", sep=" ")
+  })
 })

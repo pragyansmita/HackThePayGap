@@ -190,6 +190,7 @@ shinyUI(navbarPage("Team BabyMomma",
                                 ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep9 == 1) && (input.ChooseStep10 == 0)",
+                                  h1(textOutput("stateRank_PayGapByMedian")),
                                   #plotOutput("plot_BA"),
                                   metricsgraphicsOutput("mjs_plot_BA"),
                                   # Regular table display - instead use DataTable for more interactivity
