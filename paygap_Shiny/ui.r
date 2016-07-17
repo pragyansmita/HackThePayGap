@@ -124,7 +124,8 @@ shinyUI(navbarPage("Team BabyMomma",
                                 conditionalPanel(
                                   condition = "(input.ChooseStep5 == 1) && (input.ChooseStep6 == 0)",
                                   id="sidebarImagine",
-                                  h1(helpText("that you are about to be a mother for the first time. You are",
+                                  h1(helpText("that you are about to be a mother for the first time.")),
+                                  h1(helpText("You are",
                                               strong("excitedly planning"), "for the", 
                                               strong("new life"), "that you and your child will share."))
                                   ),
@@ -136,7 +137,8 @@ shinyUI(navbarPage("Team BabyMomma",
                                 conditionalPanel(
                                   condition = "(input.ChooseStep6 == 1) && (input.ChooseStep7 == 0)",
                                   id="sidebarImagine",
-                                  h1(helpText("You are young and driven and want to make something of your life. You work full-time and plan on", 
+                                  h1(helpText("You are young and driven and want to make something of your life.")),
+                                  h1(helpText("You work full-time and plan on", 
                                               strong("continuing to work"), "after the baby comes."))
                                 ),
                                 conditionalPanel(
@@ -149,7 +151,8 @@ shinyUI(navbarPage("Team BabyMomma",
                                   id="sidebarImagine",
                                   h1(helpText("That means you need", 
                                               strong("affordable"), "and", 
-                                              strong("high quality"), "child care. You take this decision seriously, because your baby's first year is critical to healthy development and future success."))
+                                              strong("high quality"), "child care.")),
+                                  h1(helpText("You take this decision seriously, because your baby's first year is critical to healthy development and future success."))
                                 ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep7 == 1) && (input.ChooseStep8 == 0)",
@@ -309,52 +312,51 @@ shinyUI(navbarPage("Team BabyMomma",
                               ) # mainPanel
                             ) # sidebarLayout(
                    ), # tabPanel("PUMS", 
-                   
-                   navbarMenu("More",
-                              tabPanel("BumpAhead Project Proposal",
-                                       img(src='logo_bumpAhead_small.png'),
-                                       fluidRow(
-                                         column(6,
-                                                includeMarkdown("Proposal.md")
-                                         ),
-                                         column(3,
-                                                tags$video(width="560", height="315", src="BumpaheadVideoSubmission.m4v", controls=NA),
-                                                tags$small(
-                                                  "Project Proposal Video: BumpAhead App - HackThePayGap Application for Workers"
-                                                )
-                                         )
-                                       )
+                   #navbarMenu("More",
+                   tabPanel("Project Proposal",
+                            img(src='logo_bumpAhead_small.png'),
+                            fluidRow(
+                              column(6,
+                                     includeMarkdown("Proposal.md")
                               ),
-                              tabPanel("About BumpAhead",
-                                       fluidRow(
-                                         column(6,
-                                                includeMarkdown("About.md")
-                                         ),
-                                         column(3,
-                                                img(class="img-polaroid",
-                                                    src="logo_bumpAhead.png", width = "611px", height = "538px"),
-                                                tags$strong(
-                                                  "Logo: BumpAhead App - HackThePayGap Application for Workers"
-                                                ),
-                                                img(class="img-polaroid",
-                                                    src="wordcloud_packages_res600.png", width = "806px", height = "538px"),
-                                                tags$strong(
-                                                  "Wordcloud of 1500 Tweets with Paygap"
-                                                )
-                                         )
-                                       ) # fluidRow(
-                              ), # tabPanel("About BumpAhead",
-                              tabPanel("BumpAhead Design",
-                                       img(src='logo_bumpAhead_small.png'),
-                                       tags$strong(
-                                         "BumpAhead App Design - HackThePayGap Application for Workers"
-                                       ),
-                                       htmlOutput('pdfviewer'),
-                                       # tags$iframe(width = "100%", height = "500px", scrolling="yes", 
-                                       #             src="babymamma_InVision.pdf"),
-                                       img(class="img-polaroid",
-                                           src="design.png", width = "1281px", height = "734px")
+                              column(3,
+                                     tags$video(width="560", height="315", src="BumpaheadVideoSubmission.m4v", controls=NA),
+                                     tags$small(
+                                       "Project Proposal Video: BumpAhead App - HackThePayGap Application for Workers"
+                                     )
                               )
-                   ) # navbarMenu("More",
+                            )
+                   ),
+                   tabPanel("Design",
+                            img(src='logo_bumpAhead_small.png'),
+                            tags$strong(
+                              "BumpAhead App Design - HackThePayGap Application for Workers"
+                            ),
+                            htmlOutput('pdfviewer'),
+                            # tags$iframe(width = "100%", height = "500px", scrolling="yes", 
+                            #             src="babymamma_InVision.pdf"),
+                            img(class="img-polaroid",
+                                src="design.png", width = "1281px", height = "734px")
+                   ),
+                   tabPanel("About BumpAhead",
+                            fluidRow(
+                              column(6,
+                                     includeMarkdown("About.md")
+                              ),
+                              column(3,
+                                     img(class="img-polaroid",
+                                         src="logo_bumpAhead.png", width = "611px", height = "538px"),
+                                     tags$strong(
+                                       "Logo: BumpAhead App - HackThePayGap Application for Workers"
+                                     ),
+                                     img(class="img-polaroid",
+                                         src="wordcloud_packages_res600.png", width = "806px", height = "538px"),
+                                     tags$strong(
+                                       "Wordcloud of 1500 Tweets with Paygap"
+                                     )
+                              )
+                            ) # fluidRow(
+                   ) # tabPanel("About BumpAhead",
+                   #) # navbarMenu("More",
         ) # navbarPage("BumpAhead",
 ) # shinyUI(navbarPage("BumpAhead",        
