@@ -3,6 +3,10 @@ if (!require(shiny))
   install.packages("shiny")
 if (!require(markdown))
   install.packages("markdown")
+if (!require(DT))
+  install.packages("DT")
+if (!require(metricsgraphics))
+  install.packages("metricsgraphics")
 
 
 # Customize the header panel
@@ -41,83 +45,153 @@ if (!require(markdown))
 # Define UI for BumpAhead application
 shinyUI(navbarPage("Team BabyMomma",
                    tabPanel("BumpAhead", 
+                            tags$head(tags$style(
+                              HTML('
+                                #sidebarInfo {
+                                    background-color: #d8ddfe; #Light blue for Informational pages
+                                }
+                                #sidebarImagine {
+                                    background-color: #9da9fb; #Dark blue for Imagination pages
+                                }
+                                #sidebarData {
+                                    background-color: #9dfbca; #Light green for Data pages
+                                }
+                        
+                                body, label, input, button, select { 
+                                  font-family: "Arial";
+                                }')
+                            )),
                             # Application title
                             titlePanel("HackThePayGap App for Workers: BumpAhead App"),
                             sidebarLayout(
                               sidebarPanel(
+                                #id="sidebarInfo",
                                 img(src='logo_bumpAhead_small.png'),
-                                # Screen 1: "Play to learn how the high cost of child care impacts the gender pay gap"
+                                # Screen 1: "On average, and across all occupations, women in the United States earn 79 cents for every dollar earned by men."
                                 conditionalPanel(
                                   condition = "input.ChooseStep1 == 0",
-                                  h1(helpText("Play to learn how the high cost of child care impacts the gender pay gap"))
+                                  id="sidebarInfo",
+                                  h1(helpText("On average, and across all occupations, women in the United States earn", 
+                                     strong("79 cents"), "for every", 
+                                     strong("100 cents (dollar)"), "earned by men."))
                                   ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep1 == 0)",
                                   actionButton("ChooseStep1", "Next")
                                   ),
-                                # Screen 2: "When women have a child, their potential future earnings decrease by 5%"
+                                # Screen 2: "Due, in large part, to the motherhood penalty."
                                 conditionalPanel(
                                   condition = "(input.ChooseStep1 == 1) && (input.ChooseStep2 == 0)",
-                                  h1(helpText("When women have a child, their potential future earnings decrease by 5%"))
+                                  id="sidebarInfo",
+                                  h1(helpText("Due, in large part, to", strong("the motherhood penalty.")))
                                   ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep1 == 1) && (input.ChooseStep2 == 0)",
                                   actionButton("ChooseStep2", "Next")
                                   ),
-                                # Screen 3: "Imagine that you are about to be a mother for the first time"
+                                # Screen 3: "When women have a child, their potential future earnings decreases by 5%."
                                 conditionalPanel(
                                   condition = "(input.ChooseStep2 == 1) && (input.ChooseStep3 == 0)",
-                                  h1(helpText("Imagine that you are about to be a mother for the first time"))
+                                  id="sidebarInfo",
+                                  h1(helpText("When women have a child, their potential future earnings decreases by", strong("5%.")))
                                   ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep2 == 1) && (input.ChooseStep3 == 0)",
                                   actionButton("ChooseStep3", "Next")
                                   ),
-                                # Screen 4: "You work full time and plan on continuing to work after the baby comes"
+                                # Screen 4: "Simultaneously, their expenses drastically increase. On average, child care in the U.S. costs $11,666 per year."
                                 conditionalPanel(
                                   condition = "(input.ChooseStep3 == 1) && (input.ChooseStep4 == 0)",
-                                  h1(helpText("You work full time and plan on continuing to work after the baby comes"))
+                                  id="sidebarInfo",
+                                  h1(helpText("Simultaneously, their expenses drastically increase. On average, child care in the U.S. costs", 
+                                              strong("$11,666"), "per year."))
                                   ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep3 == 1) && (input.ChooseStep4 == 0)",
                                   actionButton("ChooseStep4", "Next")
                                   ),
-                                # Screen 5: "You need to find an affordable and high quality way to care for your baby 40 hours a week"
+                                # Screen 5: "Imagine..."
                                 conditionalPanel(
                                   condition = "(input.ChooseStep4 == 1) && (input.ChooseStep5 == 0)",
-                                  h1(helpText("You need to find an affordable and high quality way to care for your baby 40 hours a week"))
+                                  id="sidebarImagine",
+                                  h1(helpText(strong("Imagine...")))
                                   ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep4 == 1) && (input.ChooseStep5 == 0)",
                                   actionButton("ChooseStep5", "Next")
                                   ),
-                                # Screen 6: "Your baby's first year is critical to healthy development and future success"
+                                # Screen 6: "that you are about to be a mother for the first time. You are excitedly planning for the new life that you and your child will share."
                                 conditionalPanel(
                                   condition = "(input.ChooseStep5 == 1) && (input.ChooseStep6 == 0)",
-                                  h1(helpText("Your baby's first year is critical to healthy development and future success"))
+                                  id="sidebarImagine",
+                                  h1(helpText("that you are about to be a mother for the first time. You are",
+                                              strong("excitedly planning"), "for the", 
+                                              strong("new life"), "that you and your child will share."))
                                   ),
                                 conditionalPanel(
                                   condition = "(input.ChooseStep5 == 1) && (input.ChooseStep6 == 0)",
                                   actionButton("ChooseStep6", "Next")
                                   ),
-                                # Screen 7: "Where do you live?"
+                                # Screen 7: "You are young and driven and want to make something of your life. You work full-time and plan on continuing to work after the baby comes."
                                 conditionalPanel(
                                   condition = "(input.ChooseStep6 == 1) && (input.ChooseStep7 == 0)",
+                                  id="sidebarImagine",
+                                  h1(helpText("You are young and driven and want to make something of your life. You work full-time and plan on", 
+                                              strong("continuing to work"), "after the baby comes."))
+                                ),
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep6 == 1) && (input.ChooseStep7 == 0)",
+                                  actionButton("ChooseStep7", "Next")
+                                ),
+                                # Screen 8: "That means you need affordable and high quality child care. You take this decision seriously, because your baby's first year is critical to healthy development and future success."
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep7 == 1) && (input.ChooseStep8 == 0)",
+                                  id="sidebarImagine",
+                                  h1(helpText("That means you need", 
+                                              strong("affordable"), "and", 
+                                              strong("high quality"), "child care. You take this decision seriously, because your baby's first year is critical to healthy development and future success."))
+                                ),
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep7 == 1) && (input.ChooseStep8 == 0)",
+                                  actionButton("ChooseStep8", "Next")
+                                ),
+                                # Screen 9: "Play to see how this choice causes the motherhood penalty."
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep8 == 1) && (input.ChooseStep9 == 0)",
+                                  id="sidebarImagine",
+                                  h1(helpText("Play to see how this choice", 
+                                              strong("causes"), "the motherhood penalty."))
+                                ),
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep8 == 1) && (input.ChooseStep9 == 0)",
+                                  actionButton("ChooseStep9", "Play >")
+                                ),
+                                # Screen 10: "Where do you live?"
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep9 == 1) && (input.ChooseStep10 == 0)",
+                                  id="sidebarData",
                                   selectInput('stateName_BA', "Where do you live?", c(Choose='', state.name), 
                                               selected="Virginia", selectize=FALSE)
                                   ),
                                 conditionalPanel(
-                                  condition = "(input.ChooseStep6 == 1) && (input.ChooseStep7 == 0)",
-                                  actionButton("ChooseStep7", "Next")
+                                  condition = "(input.ChooseStep9 == 1) && (input.ChooseStep10 == 0)",
+                                  actionButton("ChooseStep10", "Next")
                                   )
                               ),
                               mainPanel(
                                 textOutput("currentTime_BA"),
-                                # Regular table display - instead use DataTable for more interactivity
-                                # tableOutput("payGapRecords_BA")
                                 conditionalPanel(
-                                  condition = "(input.ChooseStep6 == 1) && (input.ChooseStep7 == 0)",
-                                  dataTableOutput("payGapRecordsDT_BA"))
+                                  condition = "input.ChooseStep1 == 0",
+                                  img(src='skintones_b.gif')
+                                ),
+                                conditionalPanel(
+                                  condition = "(input.ChooseStep9 == 1) && (input.ChooseStep10 == 0)",
+                                  #plotOutput("plot_BA"),
+                                  metricsgraphicsOutput("mjs_plot_BA"),
+                                  # Regular table display - instead use DataTable for more interactivity
+                                  # tableOutput("payGapRecords_BA")
+                                  dataTableOutput("payGapRecordsDT_BA")
+                                )
                               ) # mainPanel(
                             )
                    ), # tabPanel("BumpAhead",
