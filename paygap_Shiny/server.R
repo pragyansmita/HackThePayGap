@@ -16,6 +16,8 @@ if (!require(shiny))
 #   install.packages("jsonlite")
 if (!require(rjson))
   install.packages("rjson")
+if (!require(metricsgraphics))
+  install.packages("metricsgraphics")
 
 
 ################################################################################
@@ -35,6 +37,8 @@ api_key <- "Z69XvTaBEqK7g7VshJ0FGDb4ReDtFjKjeVvpNWMv"
 # Set variables
 domain <- "https://api.commerce.gov/midaas"
 quantile_precision <- 5
+midaasDataFrame <- data.frame() 
+
 
 # api <- "/distribution" # API name, Options: /quantiles, /distribution
 # year <- "2014" # Year, Options: 2005-2014 (any one of the 10 years)
@@ -188,6 +192,8 @@ getData <- function(domain, api, includeYear, year, includeState,
       midaasDataFrame <- data.frame(cbind(rownames(midaasDataList), midaasDataList[,1]))
       rownames(midaasDataFrame) <- NULL
       names(midaasDataFrame) <- c("Quantile","Income")
+      midaasDataFrame$Quantile <- gsub("overall\\.", "", midaasDataFrame$Quantile)
+      midaasDataFrame$Quantile <- gsub("\\%", "", midaasDataFrame$Quantile)
     }
   }
   
@@ -196,6 +202,7 @@ getData <- function(domain, api, includeYear, year, includeState,
   #    1    $30.00k-$40.00k    0.125747745933784
   #    2    $40.00k-$50.00k    0.106384589390417    
   return (midaasDataFrame)
+  #return (midaasDataList)
 }
   
 
@@ -286,6 +293,7 @@ shinyServer(function(input, output, session) {
                                includeAgeGroup, ageGroup, includeCompare, compare, api_key)
   })  
   
+  
   # Show the MIDAAS API Call resulting information
   # Regular table display - instead use DataTable for more interactivity
   #   output$payGapRecords <- renderTable({
@@ -302,7 +310,31 @@ shinyServer(function(input, output, session) {
   output$payGapRecordsDT_BA <- renderDataTable({
     datasetInput_BA()
   })
+    
+  output$plot_BA <- renderPlot({
+    df <- datasetInput_BA()
+    par(bg="lightgray", col.axis="black", cex=1)
+    plot(df$Quantile, df$Income, xlab="Quantile", ylab="Income", 
+         main=paste("State:", input$stateName_BA, sep=" "), type="n")
+    # Now draw both axes
+    axis(1, tck = 1, col = "white", lty = "dotted")
+    axis(2, tck = 1, col = "white", lty = "dotted")
+    # Replace the grey plot region border lines with black
+    box()
+    points(df$Quantile, df$Income)
+  })
   
+  output$mjs_plot_BA <- renderMetricsgraphics({
+    # Example from MetricsGraphics http://hrbrmstr.github.io/metricsgraphics/
+    #     mjs_plot(mtcars, x=wt, y=mpg) %>%
+    #        mjs_point(color_accessor=carb, size_accessor=carb) %>%
+    #        mjs_labs(x="Weight of Car", y="Miles per Gallon")
+    df <- datasetInput_BA()
+    mjs_plot(data=df, x=Quantile, y=Income, title=paste("Selected State:", input$stateName_BA, sep=" ")) %>%
+      mjs_labs(x="Quantile", y="Income") %>%
+      mjs_axis_x(xax_format = 'plain')
+  })
+
   output$currentTime <- renderText({
     invalidateLater(1000, session)
     paste("The current time is", Sys.time())
