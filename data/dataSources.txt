@@ -1,3 +1,5 @@
 https://www.bostonglobe.com/2014/07/02/map-the-average-cost-for-child-care-state/LN65rSHXKNjr4eypyxT0WM/story.html
 2012_childCareCostByState.csv
 
+http://www.huffingtonpost.com/2013/02/04/maternity-leave-paid-parental-leave-_n_2617284.html
+paygap_Shiny\www\World_PaidMaternityPaternityLeave.png

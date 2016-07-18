@@ -352,6 +352,10 @@ shinyServer(function(input, output, session) {
     return('<iframe style="height:600px; width:100%", src="babymamma_InVision.pdf"></iframe>')
   })
   
+  output$StateSelectedAsLocation <- renderText({
+    input$stateName_BA
+  })
+  
   output$stateRank_PayGapByMedian <- renderText({
     # Female Statistics
     statesMedianFemale2014 <- rjson::fromJSON(file = "https://api.commerce.gov/midaas/quantiles?year=2014&sex=female&compare=state&api_key=Z69XvTaBEqK7g7VshJ0FGDb4ReDtFjKjeVvpNWMv")
